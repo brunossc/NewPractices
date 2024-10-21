@@ -8,7 +8,6 @@ services:
       - app-network
     depends_on:
       - rabbitmqInstance
-      - customerfunc
 
   
   rabbitmqInstance:
