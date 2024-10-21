@@ -1,0 +1,61 @@
+services:
+  grpcsubproject:
+    image: ${DOCKER_REGISTRY-}grpcsubproject
+    build:
+      context: .
+      dockerfile: GrpcSubProject/Dockerfile
+    networks:
+      - app-network
+    depends_on:
+      - rabbitmqInstance
+      - customerfunc
+
+  
+  rabbitmqInstance:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+    environment:
+    - RABBITMQ_DEFAULT_USER=guest
+    - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - app-network
+
+
+  customerfunc:
+    container_name: customerfunc
+    build:
+      context: .
+      dockerfile: CustomerFunc/Dockerfile
+    ports:
+      - "7071:7071"
+    environment:
+      - AzureWebJobsStorage=true
+      - UseDevelopmentStorage=true
+      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+    networks:
+      - app-network
+
+
+  miniapicustomer:
+    container_name: miniapicustomer
+    build:
+      context: .
+      dockerfile: MiniApiCustomer/Dockerfile
+    ports:
+      - "5433:8080"
+    networks:
+      - app-network
+    depends_on:
+      - rabbitmqInstance
+      - customerfunc
+
+
+networks:
+  app-network:
+    driver: bridge
+
+
+

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcSubProject.Protos";
+
+package customers;
+
+service CustomerProtoService {
+  rpc GetCustomerById (CustomerRequest) returns (CustomerReply);
+}
+
+message CustomerRequest {
+  string id = 1;
+}
+
+message CustomerReply {
+  string id = 1;
+  string name = 2;
+  string document = 3;
+}
